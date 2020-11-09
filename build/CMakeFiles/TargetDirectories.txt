@@ -1,0 +1,5 @@
+E:/DOCUMENTS/battle-game/build/CMakeFiles/battle-game.dir
+E:/DOCUMENTS/battle-game/build/CMakeFiles/ALL_BUILD.dir
+E:/DOCUMENTS/battle-game/build/CMakeFiles/ZERO_CHECK.dir
+E:/DOCUMENTS/battle-game/build/external/glfw/CMakeFiles/ALL_BUILD.dir
+E:/DOCUMENTS/battle-game/build/external/glfw/src/CMakeFiles/glfw.dir

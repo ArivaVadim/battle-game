@@ -1,0 +1,10 @@
+^E:\DOCUMENTS\BATTLE-GAME\BUILD\CMAKEFILES\32741C2AF118D0FD0E826C2FB1D7ED9D\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SE:/DOCUMENTS/battle-game -BE:/DOCUMENTS/battle-game/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file E:/DOCUMENTS/battle-game/build/battle-game.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
