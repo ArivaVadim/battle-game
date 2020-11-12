@@ -2,6 +2,35 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+GLfloat point[] = {
+    0.0f, 0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    -0.5f, -0.5f, 0.0f
+};
+
+GLfloat color[] = {
+    1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 1.0f
+};
+
+const GLchar* vertex_shader =
+"#version 450\n"
+"layout (location = 0) in vec3 vertex_position;"
+"layout (location = 1) in vec3 vertex_color;"
+"out vec3 color;"
+"void main(){"
+"   color = vertex_color;"
+"   gl_Position = vec4(vertex_position, 1.0);"
+"}";
+
+const GLchar* fragment_shader =
+"#version 450\n"
+"in vec3 color;"
+"out vec4 frag_color;"
+"void main(){"
+"   frag_color = vec4(color, 1.0);"
+"}";
 
 int windowsSizeX = 640;
 int windowsSizeY = 480;
@@ -45,7 +74,7 @@ int main(void)
         return -1;
     }
 
-    glfwSetWindowSizeCallback(pWindow, glfwWindowSizeCallBack); /// what?????
+    glfwSetWindowSizeCallback(pWindow, glfwWindowSizeCallBack); 
     glfwSetKeyCallback(pWindow, glfwKeyCallBack);
 
     /* Make the window's context current */
@@ -60,13 +89,55 @@ int main(void)
     std::cout << "Renderer: " << glGetString(GL_RENDERER)<<";\n";
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << ";\n";
 
-	glClearColor(1,1,0,1);
+	glClearColor(1,1,0.5,1);
 	
+    GLuint uint_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(uint_vertex_shader, 1, &vertex_shader, nullptr);
+    glCompileShader(uint_vertex_shader);
+
+    GLuint uint_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(uint_fragment_shader, 1, &fragment_shader, nullptr);
+    glCompileShader(uint_fragment_shader);
+
+    GLuint shader_program = glCreateProgram();
+    glAttachShader(shader_program, uint_vertex_shader);
+    glAttachShader(shader_program, uint_fragment_shader);
+    glLinkProgram(shader_program);
+
+    glDeleteShader(uint_vertex_shader);
+    glDeleteShader(uint_fragment_shader);
+
+    GLuint points_buffer = 0;
+    glGenBuffers(1, &points_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, points_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(point), point, GL_STATIC_DRAW);
+
+    GLuint colors_buffer = 0;
+    glGenBuffers(1, &colors_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colors_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
+
+    GLuint vertex_array = 0;
+    glGenVertexArrays(1, &vertex_array);
+    glBindVertexArray(vertex_array);
+
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, points_buffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, colors_buffer);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(pWindow))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(shader_program);
+        glBindVertexArray(vertex_array);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(pWindow);
