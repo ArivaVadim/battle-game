@@ -4,11 +4,22 @@
     <ClCompile Include="E:\DOCUMENTS\battle-game\sources\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\DOCUMENTS\battle-game\sources\Rendering\shader_program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\DOCUMENTS\battle-game\sources\Rendering\shader_program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="E:\DOCUMENTS\battle-game\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{AACA62BB-FC79-3D8C-B5BD-FBD488B660FB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{5103919A-7317-3347-BBCC-7B7042086E2B}</UniqueIdentifier>
     </Filter>

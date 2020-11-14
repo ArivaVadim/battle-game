@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Rendering/shader_program.h"
 
 GLfloat point[] = {
     0.0f, 0.5f, 0.0f,
@@ -14,7 +15,7 @@ GLfloat color[] = {
     0.0f, 0.0f, 1.0f
 };
 
-const GLchar* vertex_shader =
+const GLchar* vertex_shader_program =
 "#version 450\n"
 "layout (location = 0) in vec3 vertex_position;"
 "layout (location = 1) in vec3 vertex_color;"
@@ -24,7 +25,7 @@ const GLchar* vertex_shader =
 "   gl_Position = vec4(vertex_position, 1.0);"
 "}";
 
-const GLchar* fragment_shader =
+const GLchar* fragment_shader_program =
 "#version 450\n"
 "in vec3 color;"
 "out vec4 frag_color;"
@@ -91,21 +92,27 @@ int main(void)
 
 	glClearColor(1,1,0.5,1);
 	
-    GLuint uint_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    ShaderProgram rendering;
+    rendering.initShader(GL_VERTEX_SHADER, vertex_shader_program);
+    GLuint vertex_shader = rendering.getShader();
+    rendering.initShader(GL_FRAGMENT_SHADER, fragment_shader_program);
+    GLuint fragment_shader = rendering.getShader();
+
+    /*GLuint uint_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(uint_vertex_shader, 1, &vertex_shader, nullptr);
     glCompileShader(uint_vertex_shader);
 
     GLuint uint_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(uint_fragment_shader, 1, &fragment_shader, nullptr);
-    glCompileShader(uint_fragment_shader);
+    glCompileShader(uint_fragment_shader);*/
 
     GLuint shader_program = glCreateProgram();
-    glAttachShader(shader_program, uint_vertex_shader);
-    glAttachShader(shader_program, uint_fragment_shader);
+    glAttachShader(shader_program, vertex_shader);
+    glAttachShader(shader_program, fragment_shader);
     glLinkProgram(shader_program);
 
-    glDeleteShader(uint_vertex_shader);
-    glDeleteShader(uint_fragment_shader);
+    glDeleteShader(vertex_shader);
+    glDeleteShader(fragment_shader);
 
     GLuint points_buffer = 0;
     glGenBuffers(1, &points_buffer);
