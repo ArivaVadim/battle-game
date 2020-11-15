@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Rendering/shader_program.h"
+#include "Resources/resources_manager.h"
 
 GLfloat point[] = {
     0.0f, 0.5f, 0.0f,
@@ -14,24 +15,6 @@ GLfloat color[] = {
     0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 1.0f
 };
-
-const GLchar* vertex_shader_program =
-"#version 450\n"
-"layout (location = 0) in vec3 vertex_position;"
-"layout (location = 1) in vec3 vertex_color;"
-"out vec3 color;"
-"void main(){"
-"   color = vertex_color;"
-"   gl_Position = vec4(vertex_position, 1.0);"
-"}";
-
-const GLchar* fragment_shader_program =
-"#version 450\n"
-"in vec3 color;"
-"out vec4 frag_color;"
-"void main(){"
-"   frag_color = vec4(color, 1.0);"
-"}";
 
 int windowsSizeX = 640;
 int windowsSizeY = 480;
@@ -51,14 +34,13 @@ void glfwKeyCallBack(GLFWwindow* pWindow, int key, int scancode, int action, int
     }
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
     GLFWwindow* pWindow;
 
-    /* Initialize the library */
     if (!glfwInit())
     {
-        std::cout << "glfwInit() failed \n";
+        std::cerr << "ERROR::glfwInit() failed \n";
         return -1;
     }        
 
@@ -66,7 +48,6 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    /* Create a windowed mode window and its OpenGL context */
     pWindow = glfwCreateWindow(windowsSizeX, windowsSizeY, "Battle-game", nullptr, nullptr);
     if (!pWindow)
     {
@@ -83,7 +64,7 @@ int main(void)
 	
 	if(!gladLoadGL())
 	{
-		std::cout<<"Can't load GLAD\n";
+        std::cerr << "ERROR::Can't load GLAD\n";
 		return -1;
 	}
 
@@ -91,48 +72,56 @@ int main(void)
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << ";\n";
 
 	glClearColor(1,1,0.5,1);
-	
-    ShaderProgram rendering(vertex_shader_program,fragment_shader_program);
 
-    GLuint points_buffer = 0;
-    glGenBuffers(1, &points_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, points_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(point), point, GL_STATIC_DRAW);
-
-    GLuint colors_buffer = 0;
-    glGenBuffers(1, &colors_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colors_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
-
-    GLuint vertex_array = 0;
-    glGenVertexArrays(1, &vertex_array);
-    glBindVertexArray(vertex_array);
-
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, points_buffer);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, colors_buffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(pWindow))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        ResourcesManager resources_manager(argv[0]);
+        auto p_default_shader_program = resources_manager.loadShaders("default_shaders", "resources/shaders/vertex.txt", "resources/shaders/fragment.txt");
+        if (!p_default_shader_program)
+        {
+            std::cerr << "ERROR::main()::resources_manager.loadShaders() - Can't create shader program;\n";
+            return -1;
+        }
 
-        rendering.use();
+        GLuint points_buffer = 0;
+        glGenBuffers(1, &points_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, points_buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(point), point, GL_STATIC_DRAW);
+
+        GLuint colors_buffer = 0;
+        glGenBuffers(1, &colors_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, colors_buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
+
+        GLuint vertex_array = 0;
+        glGenVertexArrays(1, &vertex_array);
         glBindVertexArray(vertex_array);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(pWindow);
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, points_buffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, colors_buffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        /* Loop until the user closes the window */
+        while (!glfwWindowShouldClose(pWindow))
+        {
+            /* Render here */
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            p_default_shader_program->useShaderProgram();
+            glBindVertexArray(vertex_array);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            /* Swap front and back buffers */
+            glfwSwapBuffers(pWindow);
+
+            /* Poll for and process events */
+            glfwPollEvents();
+        }
     }
-
+    
     glfwTerminate();
     return 0;
 }

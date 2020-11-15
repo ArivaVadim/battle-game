@@ -1,7 +1,9 @@
 #include "shader_program.h"
 
-ShaderProgram::ShaderProgram(const GLchar* vertex_shader_program, const GLchar* fragment_shader_program)
+ShaderProgram::ShaderProgram(const std::string& vertex_shader_program, const std::string& fragment_shader_program)
 {
+    isCompile = false;
+
     if (!initShader(vertex_shader, GL_VERTEX_SHADER, vertex_shader_program))
         return;
 
@@ -18,6 +20,8 @@ ShaderProgram::ShaderProgram(const GLchar* vertex_shader_program, const GLchar* 
         return;
     }
 
+    isCompile = true;
+
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 }
@@ -28,10 +32,11 @@ ShaderProgram ::~ShaderProgram()
 }
 
 
-bool ShaderProgram::initShader(GLuint& shader,const GLenum type, const GLchar* shader_program)
+bool ShaderProgram::initShader(GLuint& shader, const GLenum type, const std::string& shader_program)
 {
     shader = glCreateShader(type);
-    glShaderSource(shader, 1, &shader_program, nullptr);
+    const char* source = shader_program.c_str();
+    glShaderSource(shader, 1, &source, nullptr);
     glCompileShader(shader);
     
     GLint isCompile;
@@ -67,7 +72,7 @@ bool ShaderProgram::linkProgram(GLuint& program, const GLuint& shader1, const GL
     return true;
 }
 
-void ShaderProgram::use() const
+void ShaderProgram::useShaderProgram() const
 {
     glUseProgram(program);
 }
