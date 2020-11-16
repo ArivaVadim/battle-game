@@ -18,6 +18,9 @@
     <ClInclude Include="E:\DOCUMENTS\battle-game\sources\Resources\resources_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="E:\DOCUMENTS\battle-game\sources\Resources\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="E:\DOCUMENTS\battle-game\CMakeLists.txt" />

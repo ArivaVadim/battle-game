@@ -15,11 +15,11 @@ public:
 	~ResourcesManager() = default;
 	std::shared_ptr<ShaderProgram> loadShaders(const std::string& shader_name, const std::string& vertex_path, const std::string& fragment_path);
 	std::shared_ptr<ShaderProgram> getShaderProgram(const std::string& shader_name) const;
+	void loadTexture(const std::string& texture_name, const std::string& texture_path);
 
 	ResourcesManager() = delete;
 	ResourcesManager(const ResourcesManager&) = delete;
 	ResourcesManager& operator=(const ResourcesManager&) = delete;
-
 
 private:
 	std::string executable_path;

@@ -1,1 +1,9 @@
 ﻿  Checking Build System
+  CMake is re-running because E:/DOCUMENTS/battle-game/build/CMakeFiles/generate.stamp is out-of-date.
+    the file 'E:/DOCUMENTS/battle-game/CMakeLists.txt'
+    is newer than 'E:/DOCUMENTS/battle-game/build/CMakeFiles/generate.stamp.depend'
+    result='-1'
+  -- Using Win32 for window creation
+  -- Configuring done
+  -- Generating done
+  -- Build files have been written to: E:/DOCUMENTS/battle-game/build
