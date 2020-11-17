@@ -82,7 +82,7 @@ int main(int argc, char** argv)
             return -1;
         }
 
-        resources_manager.loadTexture("defaultTexture", "resources/textures/test_texture.png");
+        //resources_manager.loadTexture("defaultTexture", "resources/textures/test_texture.png");
 
         GLuint points_buffer = 0;
         glGenBuffers(1, &points_buffer);

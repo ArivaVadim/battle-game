@@ -7,6 +7,8 @@ add_executable(${PROJECT_NAME}
 	sources/main.cpp
 	sources/Rendering/shader_program.cpp
 	sources/Rendering/shader_program.h
+	sources/Rendering/texture2D.cpp
+	sources/Rendering/texture2D.h
 	sources/Resources/resources_manager.cpp
 	sources/Resources/resources_manager.h
 	sources/Resources/stb_image.h
